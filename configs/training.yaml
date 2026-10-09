@@ -1,0 +1,59 @@
+# =====================================================================
+# PH Multimodal System — Training Configuration
+# 训练 / 数据划分 / 泄漏控制 / 复现
+# =====================================================================
+
+training:
+  seed: 42
+  device: "auto"               # auto / cpu / cuda
+
+  # ---- 数据划分 ----
+  # 强制患者级划分：同一患者的全部访视只能落在同一划分内。
+  split:
+    method: "patient_level"    # patient_level / random / temporal / center_level
+    ratios: {train: 0.70, val: 0.10, test: 0.20}
+    stratify_by: "ph_label"
+
+  # ---- 数据泄漏控制 ----
+  leakage_control:
+    check_patient_overlap: true
+    check_temporal_leakage: true
+    check_label_leakage: true
+    check_feature_leakage: true
+    forbid_future_info: true    # 时序预测严禁使用未来信息
+
+  # ---- 缺失模态随机训练 ----
+  missing_modality_training:
+    enable: true
+    strategy: "random_mask"     # random_mask / fixed_subset
+    mask_prob: 0.3             # 训练时随机丢弃模态的概率
+
+  # ---- 优化 ----
+  optimizer:
+    name: "adamw"
+    lr: 1.0e-3
+    weight_decay: 1.0e-4
+  scheduler:
+    name: "cosine"
+    warmup_epochs: 2
+  epochs: 50
+  batch_size: 64
+
+  # ---- 早停 / 保存 ----
+  early_stopping:
+    patience: 10
+    metric: "val_auroc"
+  checkpoint_dir: "experiments/checkpoints"
+
+  # ---- 实验跟踪 (MLflow) ----
+  mlflow:
+    enabled: true
+    tracking_uri: "file:./experiments/mlruns"
+    experiment_name: "ph_multimodal"
+    log:
+      - "config"
+      - "metrics"
+      - "model_checkpoint"
+      - "random_seed"
+      - "dataset_version"
+      - "gpu_info"

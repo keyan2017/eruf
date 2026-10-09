@@ -1,0 +1,7 @@
+# ERUF — runtime dependencies (all verified against the source imports)
+torch>=2.0
+numpy
+pandas
+scikit-learn
+pyyaml
+matplotlib
