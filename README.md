@@ -1,9 +1,5 @@
 # ERUF — Evidence-guided multimodal Representation with Uncertainty-aware Fusion
 
-Reference implementation for the ERUF model and all baselines reported in the paper
-*"Pulmonary arterial hypertension multimodal early screening and cor pulmonale dynamic
-risk prediction"*.
-
 ERUF learns a **single patient-level evidence-guided representation** from multimodal clinical data under
 arbitrary modality missingness, and produces **three** quantities from one model:
 
